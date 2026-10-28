@@ -1,1 +1,1 @@
-# five-nights-at-the-hackathon
+# Five Nights at the Hackathon
