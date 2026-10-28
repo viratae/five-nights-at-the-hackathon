@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Five Nights at the Hackaton</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./images/favicon.png">
 </head>
 <body>
-    <div id="startPage">
+    <div id="startPage" class="">
         <div id="startText">
             <h1 class="glow stretch">FIVE NIGHTS AT THE HACKATHON</h1>
-            <h2 class="glow">>> START GAME</h2>
+            <h2 class="glow" id="startButton">>> START GAME</h2>
+        </div>
+    </div>
+    <div id="playPage" class="hidden">
+        <div id="instructions" class="">
+            <h3 class="glow">WELCOME TO FIVE NIGHTS AT THE HACKATHON</h3>
+            <p class="glow">> You have just been hired to work the night shift at Carl's Coding Castle</p>
+            <p class="glow">> Your mission is to survive the first night... with nothing but a computer</p>
+            <p class="glow">> Use your coding skills to survive whatever missions arrive and you might just make it</p>
+            <button id="instructionsButton">BEGIN SHIFT</button>
+        </div>
+        <div id="grid" class="hidden">
+
         </div>
     </div>
     <script type="module" src="index.js"></script>
