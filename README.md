@@ -29,13 +29,6 @@ Simply hit "Start Game" and follow the instructions!
 
 ## Roadmap
 
-Features you haven't built yet but plan to (pull these from your
-"Schedule" quadrant in the Eisenhower Matrix).
-
-- Add coffee or other way to increase light
+- Add threats
 - Add jumpscares or other game elements
 - Vary the coding challenges for replayability
-
-## Author
-
-Emily Virata, https://github.com/viratae 
