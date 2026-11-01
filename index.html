@@ -8,6 +8,9 @@
     <link rel="icon" href="./images/favicon.png">
 </head>
 <body>
+    <div id="overlay" class="hidden">
+
+    </div>
     <div id="startPage" class="">
         <div id="startText">
             <h1 class="glow stretch">FIVE NIGHTS AT THE HACKATHON</h1>
@@ -17,26 +20,31 @@
     <div id="playPage" class="hidden">
         <div id="instructions" class="">
             <h3 class="glow">WELCOME TO FIVE NIGHTS AT THE HACKATHON</h3>
-            <p class="glow">> It's a late night at the Purdue Hackathon, but unlucky for you, the night is still young.</p>
+            <p class="glow">> It's a late night at the Purdue Hackathon, but unlucky for you, the night is still young</p>
             <p class="glow">> Your mission is to survive the first night... with nothing but a computer</p>
             <p class="glow">> Use your coding skills to survive whatever missions arrive and you might just make it</p>
             <button id="instructionsButton">BEGIN SHIFT</button>
         </div>
         <div id="grid" class="hidden">
+            <img src="images/threat.png" class="hidden" id="threat" alt="Scary image of smiling hooded face">
             <div id="stats">
                 <h3>TIME: <span id="timeDisplay">12</span>:00 A.M.</h3>
-                <h3>SANITY: <span id="sanityDisplay">100</span>%</h3>
+                <h3>POWER: <span id="powerDisplay">100</span>%</h3>
+            </div>
+            <div id="buttons">
+                <button id="doorButton">SHUT DOOR</button>
             </div>
             <div id="screen" class="module">
                 <h3>CODING CHALLENGE</h3>
-                <p class="description">
+                <p class="description" id="overview">
                     It's time to contribute to the team's project! Unfortunately there is a bug that's breaking everything and the syntax highlighter is broken.
                 </p>
-                <p class="description">
-                    <span class="bold">MISSION: Identify which line the bug is on</span>
+                <p class="description bold">
+                    <span id="mission">MISSION: Identify which line the bug is on</span>
                 </p>
-                <div class="code">
-<pre><code>public class Database {
+                <div class="codeSection">
+<pre><code id="code">
+public class Database {
     int age;
     String name;
     public Database(int theAge, String name) {
@@ -45,7 +53,7 @@
     }
 }</code></pre>
                 </div>
-                <p class="description">What line is the incorrect code on?</p>
+                <p class="description" id="questionText">What line is the incorrect code on?</p>
                 <div class="answerMCQ">
                     <button id="option1">Line 3</button>
                     <button id="option2">Line 4</button>

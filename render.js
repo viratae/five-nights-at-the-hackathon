@@ -14,6 +14,8 @@ const renderer = (function renderer() {
     const grid = document.querySelector("#grid");
     const powerDisplay = document.querySelector("#powerDisplay");
     const timeDisplay = document.querySelector("#timeDisplay");
+    const doorButton = document.querySelector("#doorButton");
+    const threat = document.querySelector("#threat");
     function showHide(show, hide) {
         show.classList.remove("hidden");
         hide.classList.add("hidden");
@@ -25,10 +27,16 @@ const renderer = (function renderer() {
         }
         else {
             overlay.classList.remove("hidden");
-
         }
     }
-    
+    function toggleThreat(isToggled) {
+        if (isToggled) {
+            threat.classList.remove("hidden");
+        }
+        else {
+            threat.classList.add("hidden");
+        }  
+    }
     startButton.addEventListener('click', (e) => {
         console.log("Start Game");
         showHide(playPage, startPage);
@@ -37,6 +45,9 @@ const renderer = (function renderer() {
     instructionsButton.addEventListener('click', (e) => {
         showHide(grid, instructions);
         game.startNight();
+    })
+    doorButton.addEventListener('click', (e) => {
+        game.manageDoor();
     })
     function sayHi() {
         console.log("Connected!");
@@ -73,6 +84,7 @@ const renderer = (function renderer() {
     return {
         sayHi,
         toggleLights,
+        toggleThreat,
         renderPower,
         renderTime,
         renderQuestion

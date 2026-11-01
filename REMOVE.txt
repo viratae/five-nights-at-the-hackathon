@@ -1,0 +1,33 @@
+Ideas for Questions
+
+MCQ
+- 
+
+
+FREE RESPONSE
+
+Effect: __
+"Uh oh! The hacker's are scrambling the system so only they can send secret messages.
+What does the following text say when put in the function?" -> 
+- value of a variable after a loop
+
+Effect: darker? red overlay?
+"Now they've turned off the lights! Quick, turn them back on!"
+- variable named lightLevel = 0
+- write ______ setLightLevel(lightLevel) {
+    ______
+}
+(public void, this.lightLevel = lightLevel)
+- value of a password after adding different things
+- create an arraylist<Int>
+
+SPITBALLING
+Instead of light we have power
+The power obviously powers the computer and the lights so it should dictate whether or not the player survives
+The darker it gets the mroe likely a threat is to appear
+
+You and the hackers are in a fight for access to the power so the coding challenges help you reclaim
+The power could affect the lights once we have it more fleshed out
+
+
+When it's darker more threats appear. You have to fight the threats with power

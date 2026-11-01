@@ -3,27 +3,45 @@ import {
 } from "./render.js"
 const game = (function game() {
     const powerInterval = 3;
+    const oneHour = 20;
     let power = 100;
     let powerDecrease = 1;
     let seconds = 1;
     let timerID = null;
     let clockTime = 0;
-    
+    let threatActive = false;
+    let threatTime = 0;
     function startNight() {
         if (timerID != null) {
             return;
         }
         timerID = setInterval(() => {
             seconds++;
+            if (threatActive) {
+                threatTime++;
+            }
+            if (threatTime > 15) {
+                console.log("The threat has been around too long. You lose.");
+            }
             if (seconds % powerInterval == 0) {
+                // Doubles the loss of power if a threat is active
+                if (threatActive) {
+                    power -= (2 * powerDecrease);
+                }
                 power -= powerDecrease;
                 renderer.renderPower();
                 console.log(power);
             }
-            if (seconds % 20 == 0) {
+            if (seconds % oneHour == 0) {
                 clockTime++;
                 renderer.renderTime();
             }
+            if (seconds == (oneHour * 1.5)) {
+                console.log("A THREAT HAS APPEARED");
+                threatActive = true;
+                renderer.toggleThreat(threatActive);
+            }
+
         }, 1000);
     }
     function getPower() {
@@ -47,14 +65,22 @@ const game = (function game() {
         }
         renderer.renderPower();
     }
+    function manageDoor() {
+        if (power >= 20) {
+            power -= 20;
+            renderer.toggleThreat(false);
+        }
+    }
     return {
         startNight,
         getPower,
         getTime,
         raisePowerDecrease,
-        setPower
+        setPower,
+        manageDoor
     }  
 })();
+
 const questions = (function questions() {
     let questionNumber = 1;
     let lightsOn = true;
@@ -136,6 +162,9 @@ code = `public static void main(String[] args) {
             option2 = "ShSHss";
             option3 = "ShNOss";
             option4 = "SHnoSS";
+        }
+        else if(questionNumber == 3) {
+            
         }
         renderer.renderQuestion(overview, mission, code, question, option1, option2, option3, option4);
     }
