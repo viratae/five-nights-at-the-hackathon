@@ -1,5 +1,6 @@
 import {
-    renderer
+    renderer,
+    effects
 } from "./render.js"
 
 renderer.sayHi();

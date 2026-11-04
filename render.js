@@ -9,6 +9,7 @@ const renderer = (function renderer() {
     const startButton = document.querySelector("#startButton");
     const startPage = document.querySelector("#startPage");
     const playPage = document.querySelector("#playPage");
+    const losePage = document.querySelector("#losePage");
     const instructionsButton = document.querySelector("#instructionsButton");
     const instructions = document.querySelector("#instructions");
     const grid = document.querySelector("#grid");
@@ -24,14 +25,17 @@ const renderer = (function renderer() {
         const overlay = document.querySelector("#overlay");
         if (isOn) {
             overlay.classList.add("hidden");
+            effects.lightsOnSound();
         }
         else {
             overlay.classList.remove("hidden");
+            effects.lightsOffSound();
         }
     }
     function toggleThreat(isToggled) {
         if (isToggled) {
             threat.classList.remove("hidden");
+            effects.scarySound();
         }
         else {
             threat.classList.add("hidden");
@@ -40,11 +44,14 @@ const renderer = (function renderer() {
     startButton.addEventListener('click', (e) => {
         console.log("Start Game");
         showHide(playPage, startPage);
-        
+        effects.menuClick();
+        effects.startMusic();
     })
     instructionsButton.addEventListener('click', (e) => {
         showHide(grid, instructions);
         game.startNight();
+        effects.menuClick();
+
     })
     doorButton.addEventListener('click', (e) => {
         game.manageDoor();
@@ -60,6 +67,13 @@ const renderer = (function renderer() {
     function renderTime() {
         let time = game.getTime();
         timeDisplay.textContent = time;
+    }
+    function renderLoss() {
+        showHide(losePage, playPage);
+        effects.jumpScareSound();
+    }
+    function disable(component) {
+        component.disabled = true;
     }
     function renderQuestion(overviewText, missionText, codeText, questionText, option1Text, option2Text, option3Text, option4Text) {
         const overview = document.querySelector("#overview");
@@ -87,9 +101,65 @@ const renderer = (function renderer() {
         toggleThreat,
         renderPower,
         renderTime,
-        renderQuestion
+        renderQuestion,
+        renderLoss,
+        disable
+    }
+})();
+const effects = (function effects() {
+    function startMusic() {
+        const backgroundMusic = new Audio("audio/backgroundMusic.mp3");
+    
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.2;
+        backgroundMusic.play();
+    }
+    function scarySound() {
+        const scarySound = new Audio("audio/quickScary.mp3")
+        scarySound.play();
+    }
+    function menuClick() {
+        const menuClick = new Audio("audio/menuButton.mp3")
+        menuClick.volume = 0.2;
+        menuClick.play();
+    }
+    function correctSound() {
+        const correctSound = new Audio("audio/correct.mp3");
+        correctSound.play();
+    }
+    function incorrectSound() {
+        const incorrectSound = new Audio("audio/incorrect.mp3");
+        incorrectSound.play();
+    }
+    function doorClose() {
+        const doorClose = new Audio("audio/doorClose.mp3");
+        doorClose.play();
+    }
+    function lightsOffSound() {
+        const lightsOff = new Audio("audio/lightsOff.mp3");
+        lightsOff.play();
+    }
+    function lightsOnSound() {
+        const lightsOn = new Audio("audio/lightsOn.mp3");
+        lightsOn.play();
+    }
+    function jumpScareSound() {
+        const jumpScareSound = new Audio("audio/jumpscare.mp3");
+        jumpScareSound.play();
+    }
+    return {
+        startMusic,
+        scarySound,
+        menuClick,
+        correctSound,
+        incorrectSound,
+        doorClose,
+        lightsOffSound,
+        lightsOnSound,
+        jumpScareSound
     }
 })();
 export {
-    renderer
+    renderer,
+    effects
 }

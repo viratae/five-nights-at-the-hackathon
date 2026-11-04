@@ -1,4 +1,5 @@
 import {
+    effects,
     renderer
 } from "./render.js"
 const game = (function game() {
@@ -11,6 +12,7 @@ const game = (function game() {
     let clockTime = 0;
     let threatActive = false;
     let threatTime = 0;
+    let doorPowerNeeded = 20;
     function startNight() {
         if (timerID != null) {
             return;
@@ -20,8 +22,10 @@ const game = (function game() {
             if (threatActive) {
                 threatTime++;
             }
-            if (threatTime > 15) {
+            if (threatTime > 10) {
+                renderer.renderLoss();
                 console.log("The threat has been around too long. You lose.");
+                clearInterval(timerID);
             }
             if (seconds % powerInterval == 0) {
                 // Doubles the loss of power if a threat is active
@@ -40,6 +44,10 @@ const game = (function game() {
                 console.log("A THREAT HAS APPEARED");
                 threatActive = true;
                 renderer.toggleThreat(threatActive);
+            }
+            if (power < doorPowerNeeded) {
+                const doorButton = document.querySelector("#doorButton");
+                renderer.disable(doorButton)
             }
 
         }, 1000);
@@ -65,10 +73,16 @@ const game = (function game() {
         }
         renderer.renderPower();
     }
+    // Increments the required door power to make game harder as it progresses
     function manageDoor() {
-        if (power >= 20) {
-            power -= 20;
+        if (power >= doorPowerNeeded) {
+            power -= doorPowerNeeded;
+            doorPowerNeeded += 10;
+            threatTime = 0;
             renderer.toggleThreat(false);
+            threatActive = false;
+            renderer.renderPower();
+            effects.doorClose();
         }
     }
     return {
@@ -103,34 +117,43 @@ const questions = (function questions() {
         handleQuestion(4);
     })
     function handleQuestion(option) {
-        let power = game.getPower();
+        
         if (questionNumber == 1) {
             // Correct answer
             if (option == 4) {
-                game.setPower(power + 10);
+                questionEffects(true);
             } 
             // Incorrect answer
             else {
-                game.setPower(power - 15);
-                game.raisePowerDecrease();
+                questionEffects(false);
             }
         }
         else if (questionNumber == 2) {
             // Correct answer
             if (option == 2) {
-                game.setPower(power + 10);
-                lightsOn = true;
-                renderer.toggleLights(lightsOn);
+                questionEffects(true);
+                renderer.toggleLights(true);
             }
             // Incorrect answer
             else {
-                game.setPower(power - 15);
-                game.raisePowerDecrease();
+                questionEffects(false);
             }
         }
         questionNumber++;
         displayNextQuestion(questionNumber);
-        
+    }
+    function questionEffects(isCorrect) {
+        let power = game.getPower();
+        if (isCorrect) {
+            game.setPower(power + 10);
+            effects.correctSound();
+        }
+        else {
+            game.setPower(power - 15);
+            game.raisePowerDecrease();
+            effects.incorrectSound();
+        }
+        renderer.renderPower();
     }
     function displayNextQuestion(questionNumber) {
         let overview = "";
@@ -164,7 +187,7 @@ code = `public static void main(String[] args) {
             option4 = "SHnoSS";
         }
         else if(questionNumber == 3) {
-            
+
         }
         renderer.renderQuestion(overview, mission, code, question, option1, option2, option3, option4);
     }
