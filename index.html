@@ -26,13 +26,16 @@
             <button id="instructionsButton">BEGIN SHIFT</button>
         </div>
         <div id="grid" class="hidden">
-            <img src="images/threat.png" class="hidden" id="threat" alt="Scary image of smiling hooded face">
+            <img src="images/favicon.png" class="hidden" id="threat" alt="Scary image of smiling hooded face">
             <div id="stats">
                 <h3>TIME: <span id="timeDisplay">12</span>:00 A.M.</h3>
                 <h3>POWER: <span id="powerDisplay">100</span>%</h3>
             </div>
             <div id="buttons">
-                <button id="doorButton">SHUT DOOR</button>
+                <button id="doorButton">
+                    <h3>SHUT DOOR</h3>
+                    <p>Power Required: <span id="doorPowerText">20</span></p>
+                </button>
             </div>
             <div id="screen" class="module">
                 <h3>CODING CHALLENGE</h3>
@@ -54,19 +57,23 @@ public class Database {
 }</code></pre>
                 </div>
                 <p class="description" id="questionText">What line is the incorrect code on?</p>
-                <div class="answerMCQ">
+                <div id="answerMCQ">
                     <button id="option1">Line 3</button>
                     <button id="option2">Line 4</button>
                     <button id="option3">Line 5</button>
                     <button id="option4">Line 6</button>
                 </div>
+                <div id="answerFree" class="hidden">
+                    <form id="answerForm" autocomplete="off">
+                        <input type="text" id="answerInput">
+                        <button type="Submit">Submit</button>
+                    </form>
+                </div>
             </div>
-
-            <!-- <div id="stats" class="module">
-                THIS IS THR STATS
-            </div> -->
         </div>
-        <!-- <img id="coffee" src="images/coffee.png" alt=""> -->
+    </div>
+    <div id="losePage" class="hidden">
+
     </div>
     <script type="module" src="index.js"></script>
 </body>

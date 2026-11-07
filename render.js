@@ -72,28 +72,36 @@ const renderer = (function renderer() {
         showHide(losePage, playPage);
         effects.jumpScareSound();
     }
-    function disable(component) {
-        component.disabled = true;
+    function disable(component, bool) {
+        component.disabled = bool;
     }
-    function renderQuestion(overviewText, missionText, codeText, questionText, option1Text, option2Text, option3Text, option4Text) {
+    function renderQuestion(overviewText, missionText, codeText, questionText, option1Text, option2Text, option3Text, option4Text, isMCQ) {
         const overview = document.querySelector("#overview");
         const mission = document.querySelector("#mission");
         const code = document.querySelector("#code");
         const question = document.querySelector("#questionText");
 
+        const answerMCQ = document.querySelector("#answerMCQ");
+        const answerFree = document.querySelector("#answerFree");
         overview.textContent = overviewText;
         mission.textContent = missionText;
         code.textContent = codeText;
         question.textContent = questionText;
-        const option1 = document.querySelector("#option1");
-        const option2 = document.querySelector("#option2");
-        const option3 = document.querySelector("#option3");
-        const option4 = document.querySelector("#option4");
-
-        option1.textContent = option1Text;
-        option2.textContent = option2Text;
-        option3.textContent = option3Text;
-        option4.textContent = option4Text;
+        if (isMCQ) {
+            showHide(answerMCQ, answerFree);
+            const option1 = document.querySelector("#option1");
+            const option2 = document.querySelector("#option2");
+            const option3 = document.querySelector("#option3");
+            const option4 = document.querySelector("#option4");
+    
+            option1.textContent = option1Text;
+            option2.textContent = option2Text;
+            option3.textContent = option3Text;
+            option4.textContent = option4Text;
+        } else {
+            showHide(answerFree, answerMCQ);
+            
+        }
     }
     return {
         sayHi,

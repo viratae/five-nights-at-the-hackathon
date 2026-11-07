@@ -30,7 +30,7 @@ const game = (function game() {
             if (seconds % powerInterval == 0) {
                 // Doubles the loss of power if a threat is active
                 if (threatActive) {
-                    power -= (2 * powerDecrease);
+                    power -= powerDecrease;
                 }
                 power -= powerDecrease;
                 renderer.renderPower();
@@ -41,13 +41,15 @@ const game = (function game() {
                 renderer.renderTime();
             }
             if (seconds == (oneHour * 1.5)) {
-                console.log("A THREAT HAS APPEARED");
                 threatActive = true;
                 renderer.toggleThreat(threatActive);
             }
             if (power < doorPowerNeeded) {
                 const doorButton = document.querySelector("#doorButton");
-                renderer.disable(doorButton)
+                renderer.disable(doorButton, true);
+            }
+            else {
+                renderer.disable(doorButton, false);
             }
 
         }, 1000);
@@ -103,7 +105,8 @@ const questions = (function questions() {
     const option2 = document.querySelector("#option2");
     const option3 = document.querySelector("#option3");
     const option4 = document.querySelector("#option4");
-
+    const answerForm = document.querySelector("#answerForm");
+    const answerInput = document.querySelector("#answerInput");
     option1.addEventListener('click', (e) => {
         handleQuestion(1);
     })
@@ -115,6 +118,11 @@ const questions = (function questions() {
     })
     option4.addEventListener('click', (e) => {
         handleQuestion(4);
+    })
+    answerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleQuestion(answerInput.value);
+        answerInput.value="";
     })
     function handleQuestion(option) {
         
@@ -130,11 +138,20 @@ const questions = (function questions() {
         }
         else if (questionNumber == 2) {
             // Correct answer
-            if (option == 2) {
+            if (option == "ShSHss" || option == "dev") {
                 questionEffects(true);
                 renderer.toggleLights(true);
             }
             // Incorrect answer
+            else {
+                questionEffects(false);
+            }
+        }
+        else if (questionNumber == 3) {
+            // Replaces the spaces in the player's input so that they get credit no matter the spacing
+            if (option.replace(/\s/g, '') == "i<attempts;i++") {
+                questionEffects(true);
+            }
             else {
                 questionEffects(false);
             }
@@ -165,7 +182,9 @@ const questions = (function questions() {
         let option2 = "";
         let option3 = "";
         let option4 = "";
+        let isMCQ = true;
         if (questionNumber == 2) {
+            isMCQ = false;
             lightsOn = false;
             renderer.toggleLights(lightsOn);
             overview = "Whoa! The lights went out. It looks like somebody hacked into the building's server. Quick, gain access back before anything happens!";
@@ -181,15 +200,20 @@ code = `public static void main(String[] args) {
     password += password.toUpperCase() + split[3].substring(2);
 }`;
             question = "Find the right password to regain access ";
-            option1 = "SHshss";
-            option2 = "ShSHss";
-            option3 = "ShNOss";
-            option4 = "SHnoSS";
+            
         }
-        else if(questionNumber == 3) {
-
+        else if (questionNumber == 3) {
+            isMCQ = false;
+            overview = "Looks like they've now taken over control of the doors. If you can't gain access back, you won't be able to shut doors for some time and any threat can come inside!";
+            mission = "Look at the door's current loop logic and fix it so that you get 3 attempts";
+code = `public static void main(String[] args) {
+    int attempts = 3;
+    for (int i = 0; _____________) {
+        System.Override();
+    }
+}`;
         }
-        renderer.renderQuestion(overview, mission, code, question, option1, option2, option3, option4);
+        renderer.renderQuestion(overview, mission, code, question, option1, option2, option3, option4, isMCQ);
     }
     return {
 
