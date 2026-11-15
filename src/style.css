@@ -27,6 +27,17 @@ body {
     background-image:url(images/gameBackground.png);
     background-size: cover;
 }
+#playPage {
+    background-image: url("images/gameBackground.png");
+}
+
+#playPage.hallwayOn {
+    background-image: url("images/hallwayOn.png");
+}
+
+#playPage.doorClosed {
+    background-image: url("images/doorClosed.png");
+}
 #losePage {
     height: 100vh;
     width: 100vw;
@@ -154,12 +165,13 @@ h2 {
     border: 2px solid rgb(69, 200, 78);
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.797);
+    transition: all .3s;
     text-shadow: 0 0 10px rgb(27, 144, 21), 
         0 0 4px rgb(16, 175, 29),
         0 0 2px rgb(26, 144, 46);
 }
 #buttons button:hover {
-    
+    background-color: rgba(50, 255, 47, 0.231);
 }
 #buttons button:disabled {
     text-shadow: 0 0 10px rgba(144, 27, 21, 0.737), 
@@ -170,7 +182,7 @@ h2 {
     
 } 
 #buttons button:hover:disabled {
-    
+    background-color: rgba(0, 0, 0, 0.797);
 }
 .module {
     background-color: rgb(11, 18, 15);

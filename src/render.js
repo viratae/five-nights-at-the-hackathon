@@ -2,8 +2,13 @@
 Handles the rendering of screen components
 */
 import {
-    game
+    game,
+    powerManager
 } from "./game.js"
+import { 
+    hallwayLight,
+    door 
+} from "./powerUser.js";
 
 const renderer = (function renderer() {
     const startButton = document.querySelector("#startButton");
@@ -15,6 +20,7 @@ const renderer = (function renderer() {
     const grid = document.querySelector("#grid");
     const powerDisplay = document.querySelector("#powerDisplay");
     const timeDisplay = document.querySelector("#timeDisplay");
+    const hallwayButton = document.querySelector("#hallwayButton");
     const doorButton = document.querySelector("#doorButton");
     const threat = document.querySelector("#threat");
     function showHide(show, hide) {
@@ -53,15 +59,46 @@ const renderer = (function renderer() {
         effects.menuClick();
 
     })
+    hallwayButton.addEventListener('click', (e) => {
+        hallwayLight.toggle();
+        if(door.isActive) {
+            door.deactivate();
+            door.incrementClicks();
+        }
+    })
     doorButton.addEventListener('click', (e) => {
-        game.manageDoor();
+        door.toggle();
+        if(hallwayLight.isActive) {
+            hallwayLight.deactivate();
+            hallwayLight.incrementClicks();
+        }
     })
     function sayHi() {
         console.log("Connected!");
     }
-
+    function changeBackgroundImage(style) {
+        if (style == "doorClosed") {
+            playPage.className = "";
+            playPage.classList.add("doorClosed");
+        }
+        else if (style == "hallwayOn") {
+            playPage.className = "";
+            playPage.classList.add("hallwayOn");
+        }
+        else if (style == "default") {
+            playPage.className = "";
+        }
+    }
+    function removeState(style) {
+        if(style == "doorClosed") {
+            playPage.classList.remove("doorClosed");
+        }
+        else if(style == "hallwayOn") {
+            playPage.classList.remove("hallwayOn");
+        }
+    }
     function renderPower() {
-        let power = game.getPower();
+        let power = powerManager.getPower();
         powerDisplay.textContent = power;
     }
     function renderTime() {
@@ -105,6 +142,8 @@ const renderer = (function renderer() {
     }
     return {
         sayHi,
+        changeBackgroundImage,
+        removeState,
         toggleLights,
         toggleThreat,
         renderPower,
@@ -116,43 +155,51 @@ const renderer = (function renderer() {
 })();
 const effects = (function effects() {
     function startMusic() {
-        const backgroundMusic = new Audio("audio/backgroundMusic.mp3");
+        const backgroundMusic = new Audio("./src/audio/backgroundMusic.mp3");
     
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.2;
         backgroundMusic.play();
     }
     function scarySound() {
-        const scarySound = new Audio("audio/quickScary.mp3")
+        const scarySound = new Audio("./src/audio/quickScary.mp3")
         scarySound.play();
     }
     function menuClick() {
-        const menuClick = new Audio("audio/menuButton.mp3")
+        const menuClick = new Audio("./src/audio/menuButton.mp3")
         menuClick.volume = 0.2;
         menuClick.play();
     }
     function correctSound() {
-        const correctSound = new Audio("audio/correct.mp3");
+        const correctSound = new Audio("./src/audio/correct.mp3");
         correctSound.play();
     }
     function incorrectSound() {
-        const incorrectSound = new Audio("audio/incorrect.mp3");
+        const incorrectSound = new Audio("./src/audio/incorrect.mp3");
         incorrectSound.play();
     }
     function doorClose() {
-        const doorClose = new Audio("audio/doorClose.mp3");
+        const doorClose = new Audio("./src/audio/doorClose.mp3");
+        renderer.changeBackgroundImage("doorClosed");
         doorClose.play();
     }
+    
+    function defaultState() {
+        renderer.changeBackgroundImage("default");
+    }
+    function hallwayOn() {
+        renderer.changeBackgroundImage("hallwayOn");
+    }
     function lightsOffSound() {
-        const lightsOff = new Audio("audio/lightsOff.mp3");
+        const lightsOff = new Audio("./src/audio/lightsOff.mp3");
         lightsOff.play();
     }
     function lightsOnSound() {
-        const lightsOn = new Audio("audio/lightsOn.mp3");
+        const lightsOn = new Audio("./src/audio/lightsOn.mp3");
         lightsOn.play();
     }
     function jumpScareSound() {
-        const jumpScareSound = new Audio("audio/jumpscare.mp3");
+        const jumpScareSound = new Audio("./src/audio/jumpscare.mp3");
         jumpScareSound.play();
     }
     return {
@@ -162,6 +209,8 @@ const effects = (function effects() {
         correctSound,
         incorrectSound,
         doorClose,
+        hallwayOn,
+        defaultState,
         lightsOffSound,
         lightsOnSound,
         jumpScareSound

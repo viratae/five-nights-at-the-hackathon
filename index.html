@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Five Nights at the Hackaton</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="./images/favicon.png">
+    <link rel="stylesheet" href="src/style.css">
+    <link rel="icon" href="src/images/favicon.png">
 </head>
 <body>
     <div id="overlay" class="hidden">
@@ -26,15 +26,19 @@
             <button id="instructionsButton">BEGIN SHIFT</button>
         </div>
         <div id="grid" class="hidden">
-            <img src="images/favicon.png" class="hidden" id="threat" alt="Scary image of smiling hooded face">
+            <img src="src/images/favicon.png" class="hidden" id="threat" alt="Scary image of smiling hooded face">
             <div id="stats">
                 <h3>TIME: <span id="timeDisplay">12</span>:00 A.M.</h3>
                 <h3>POWER: <span id="powerDisplay">100</span>%</h3>
             </div>
             <div id="buttons">
+                <button id="hallwayButton">
+                    <h3>HALLWAY LIGHT</h3>
+                    <p>Power Required: <span id="doorPowerText">3 / Second</span></p>
+                </button>
                 <button id="doorButton">
                     <h3>SHUT DOOR</h3>
-                    <p>Power Required: <span id="doorPowerText">20</span></p>
+                    <p>Power Required: <span id="doorPowerText">6 / Second</span></p>
                 </button>
             </div>
             <div id="screen" class="module">
@@ -75,6 +79,6 @@ public class Database {
     <div id="losePage" class="hidden">
 
     </div>
-    <script type="module" src="index.js"></script>
+    <script type="module" src="./src/index.js"></script>
 </body>
 </html>

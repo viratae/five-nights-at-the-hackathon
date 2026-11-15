@@ -1,6 +1,8 @@
 import {
     renderer,
-    effects
 } from "./render.js"
+import {
+    questions
+} from "./questions.js"
 
 renderer.sayHi();

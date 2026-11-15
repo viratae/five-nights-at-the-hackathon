@@ -1,101 +1,9 @@
+import { 
+    powerManager
+ } from "./game.js";
 import {
-    effects,
-    renderer
+    effects, renderer
 } from "./render.js"
-const game = (function game() {
-    const powerInterval = 3;
-    const oneHour = 20;
-    let power = 100;
-    let powerDecrease = 1;
-    let seconds = 1;
-    let timerID = null;
-    let clockTime = 0;
-    let threatActive = false;
-    let threatTime = 0;
-    let doorPowerNeeded = 20;
-    function startNight() {
-        if (timerID != null) {
-            return;
-        }
-        timerID = setInterval(() => {
-            seconds++;
-            if (threatActive) {
-                threatTime++;
-            }
-            if (threatTime > 10) {
-                renderer.renderLoss();
-                console.log("The threat has been around too long. You lose.");
-                clearInterval(timerID);
-            }
-            if (seconds % powerInterval == 0) {
-                // Doubles the loss of power if a threat is active
-                if (threatActive) {
-                    power -= powerDecrease;
-                }
-                power -= powerDecrease;
-                renderer.renderPower();
-                console.log(power);
-            }
-            if (seconds % oneHour == 0) {
-                clockTime++;
-                renderer.renderTime();
-            }
-            if (seconds == (oneHour * 1.5)) {
-                threatActive = true;
-                renderer.toggleThreat(threatActive);
-            }
-            if (power < doorPowerNeeded) {
-                const doorButton = document.querySelector("#doorButton");
-                renderer.disable(doorButton, true);
-            }
-            else {
-                renderer.disable(doorButton, false);
-            }
-
-        }, 1000);
-    }
-    function getPower() {
-        return power;
-    }
-    function getTime() {
-        return clockTime;
-    }
-    function raisePowerDecrease() {
-        powerDecrease++;
-    }
-    function setPower(newPower) {
-        if (newPower > 100) {
-            power = 100;
-        } 
-        else if(newPower < 0) {
-            power = 0;
-        }
-        else {
-            power = newPower;
-        }
-        renderer.renderPower();
-    }
-    // Increments the required door power to make game harder as it progresses
-    function manageDoor() {
-        if (power >= doorPowerNeeded) {
-            power -= doorPowerNeeded;
-            doorPowerNeeded += 10;
-            threatTime = 0;
-            renderer.toggleThreat(false);
-            threatActive = false;
-            renderer.renderPower();
-            effects.doorClose();
-        }
-    }
-    return {
-        startNight,
-        getPower,
-        getTime,
-        raisePowerDecrease,
-        setPower,
-        manageDoor
-    }  
-})();
 
 const questions = (function questions() {
     let questionNumber = 1;
@@ -117,6 +25,7 @@ const questions = (function questions() {
         handleQuestion(3);
     })
     option4.addEventListener('click', (e) => {
+        console.log("Here");
         handleQuestion(4);
     })
     answerForm.addEventListener('submit', (e) => {
@@ -130,6 +39,7 @@ const questions = (function questions() {
             // Correct answer
             if (option == 4) {
                 questionEffects(true);
+                console.log("Got this far");
             } 
             // Incorrect answer
             else {
@@ -160,14 +70,14 @@ const questions = (function questions() {
         displayNextQuestion(questionNumber);
     }
     function questionEffects(isCorrect) {
-        let power = game.getPower();
+        let power = powerManager.getPower();
         if (isCorrect) {
-            game.setPower(power + 10);
+            powerManager.setPower(power + 10);
             effects.correctSound();
         }
         else {
-            game.setPower(power - 15);
-            game.raisePowerDecrease();
+            powerManager.setPower(power - 15);
+            powerManager.raisePowerDecrease();
             effects.incorrectSound();
         }
         renderer.renderPower();
@@ -220,5 +130,5 @@ code = `public static void main(String[] args) {
     }
 })();
 export {
-    game
+    questions
 }
