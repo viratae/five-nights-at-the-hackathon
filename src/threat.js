@@ -5,6 +5,7 @@ import {
     renderer
 } from "./render.js"
 import {
+    door,
     hallwayLight
 } from "./powerUser.js"
 const threat = (function threat() {
@@ -20,7 +21,9 @@ const threat = (function threat() {
         }
     }
     function activateThreat() {
-        threatActive = true;
+        if(!door.isActive) {
+            threatActive = true;
+        }
     }
     function deactivateThreat() {
         threatActive = false;
@@ -30,7 +33,7 @@ const threat = (function threat() {
             renderer.renderLoss();
             game.deactivateTimer();
         }
-        if(seconds == 1000) {
+        if(seconds == 400) {
             activateThreat();
             if(hallwayLight.isActive) {
                 renderer.toggleThreat(true);

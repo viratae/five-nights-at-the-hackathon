@@ -23,6 +23,7 @@ const game = (function game() {
             seconds++;
             threat.updateThreat(seconds);
             powerManager.updatePower(seconds);
+            updateHallway(hallwayLight.timeActive);
             if (seconds % oneHour == 0) {
                 clockTime++;
                 renderer.renderTime();
@@ -37,12 +38,25 @@ const game = (function game() {
     function getTime() {
         return clockTime;
     }  
-    
+    function updateHallway(timeActive) {
+        if(timeActive) {
+            hallwayLight.hallTime++;
+            if(hallwayLight.hallTime <= 5) {
+                renderer.disable(hallwayLight.buttonComponent, true);
+            } else if(hallwayLight.hallTime <= 15) {
+                renderer.disable(hallwayLight.buttonComponent, true);
+                hallwayLight.deactivate();
+            } else {
+                hallwayLight.resetTime();
+                renderer.disable(hallwayLight.buttonComponent, false)
+            }
+        }
+    }
     return {
         startNight,
         deactivateTimer,
         getTime,
-        
+        updateHallway
     }  
 })();
 const powerManager = (function power() {

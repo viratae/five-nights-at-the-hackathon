@@ -57,10 +57,12 @@ class Door extends PowerUser {
     }
 }
 class HallwayLight extends PowerUser {
+    hallTime = 0;
+    timeActive = false;
     activate() {
+        this.timeActive = true;
         effects.hallwayOn();
         if(threat.getThreatActive()) {
-            console.log("SHOULD DEACTIVE");
             renderer.toggleThreat(true);
         }
     }
@@ -69,6 +71,10 @@ class HallwayLight extends PowerUser {
         this.isActive = false;
         this.incrementClicks();
         renderer.toggleThreat(false);
+    }
+    resetTime() {
+        this.hallTime = 0;
+        this.timeActive = false;
     }
 }
 const doorButton = document.querySelector("#doorButton");

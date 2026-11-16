@@ -6,3 +6,4 @@ import {
 } from "./questions.js"
 
 renderer.sayHi();
+questions.displayQuestion(0);
