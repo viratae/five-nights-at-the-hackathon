@@ -10,35 +10,44 @@ import {
 } from "./powerUser.js"
 const threat = (function threat() {
     let threatActive = false;
-    let threatTime = 0;
+    let timeThreatActive = 0;  // The amount of time the threat has been active
+    let timeSinceThreat = 0;  
+    let threatRandom = generateThreatTime(15, 20);
     function updateThreat(seconds) {
-        threatEvents(seconds, threatTime);
-        if(threatActive) {
-            threatTime++;
+        threatEvents(seconds, timeThreatActive);
+        if (threatActive) {
+            timeThreatActive++;
         }
         else {
-            threatTime = 0;
+            timeThreatActive = 0;
         }
     }
     function activateThreat() {
-        if(!door.isActive) {
+        if (!door.isActive) {
             threatActive = true;
+        }
+        if (hallwayLight.isActive) {
+            renderer.toggleThreat(true);
         }
     }
     function deactivateThreat() {
         threatActive = false;
     }
-    function threatEvents(seconds, threatTime) {
-        if(threatTime >= 15) {
+    function threatEvents(seconds, timeThreatActive) {
+        timeSinceThreat++;
+        if (timeThreatActive >= 15) {
             renderer.renderLoss();
             game.deactivateTimer();
         }
-        if(seconds == 400) {
+        if (timeSinceThreat == threatRandom) {
             activateThreat();
-            if(hallwayLight.isActive) {
-                renderer.toggleThreat(true);
-            }
+            threatRandom = generateThreatTime(20, 45);
+            console.log("THREAT PRESENT WOOP");
+            timeSinceThreat = 0;
         }
+    }
+    function generateThreatTime(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     function getThreatActive() {
         return threatActive;

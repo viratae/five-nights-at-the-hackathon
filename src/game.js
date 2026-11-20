@@ -49,7 +49,9 @@ const game = (function game() {
                 renderer.disable(hallwayLight.buttonComponent, true);
             } else if (hallwayLight.hallTime <= 15) {
                 renderer.disable(hallwayLight.buttonComponent, true);
-                hallwayLight.deactivate();
+                if(hallwayLight.isActive) {
+                    hallwayLight.deactivate();
+                }
             } else {
                 hallwayLight.resetTime();
                 renderer.disable(hallwayLight.buttonComponent, false)
