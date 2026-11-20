@@ -28,6 +28,10 @@ const game = (function game() {
                 clockTime++;
                 renderer.renderTime();
             }
+            if (clockTime == 6) {
+                deactivateTimer();
+                renderer.renderWin();
+            }
 
         }, 1000);
     }
@@ -39,11 +43,11 @@ const game = (function game() {
         return clockTime;
     }  
     function updateHallway(timeActive) {
-        if(timeActive) {
+        if (timeActive) {
             hallwayLight.hallTime++;
-            if(hallwayLight.hallTime <= 5) {
+            if (hallwayLight.hallTime <= 5) {
                 renderer.disable(hallwayLight.buttonComponent, true);
-            } else if(hallwayLight.hallTime <= 15) {
+            } else if (hallwayLight.hallTime <= 15) {
                 renderer.disable(hallwayLight.buttonComponent, true);
                 hallwayLight.deactivate();
             } else {
@@ -67,14 +71,14 @@ const powerManager = (function power() {
     function updatePower(seconds) {
         updateObjectPower(door);
         updateObjectPower(hallwayLight);
-        if(seconds % powerInterval == 0) {
-            power -= powerDecrease;
+        if (seconds % powerInterval == 0) {
+            setPower(power - powerDecrease);
             renderer.renderPower();
         }
-        if(door.isActive && door.checkState() == false) {
+        if (door.isActive && door.checkState() == false) {
             door.deactivate();
         }
-        if(hallwayLight.isActive && hallwayLight.checkState() == false) {
+        if (hallwayLight.isActive && hallwayLight.checkState() == false) {
             hallwayLight.deactivate();
         }
     }
@@ -87,22 +91,21 @@ const powerManager = (function power() {
     function setPower(newPower) {
         if (newPower > 100) {
             power = 100;
-        } 
-        else if(newPower < 0) {
+        } else if (newPower < 0) {
             power = 0;
-        }
-        else {
+        } else {
             power = newPower;
         }
         renderer.renderPower();
     }
     function updateObjectPower(powerUser) {
-        if(powerUser.isActive) {
-            power -= powerUser.powerUsage;
-            if(power < powerUser.powerUsage) {
-                renderer.disable(powerUser.buttonComponent, true);
+        if (powerUser.isActive) {
+            if(powerUser.isTogglable) {
+                setPower(power - powerUser.powerUsage);
             }
-            else {
+            if (power < powerUser.powerUsage) {
+                renderer.disable(powerUser.buttonComponent, true);
+            } else {
                 renderer.disable(powerUser.buttonComponent, false);
             }
             renderer.renderPower();
@@ -115,9 +118,6 @@ const powerManager = (function power() {
         setPower,
     }
 })();
-
-
-
 
 export {
     game,

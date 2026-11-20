@@ -15,35 +15,46 @@ const renderer = (function renderer() {
     const startPage = document.querySelector("#startPage");
     const playPage = document.querySelector("#playPage");
     const losePage = document.querySelector("#losePage");
+    const winPage = document.querySelector("#winPage");
     const instructionsButton = document.querySelector("#instructionsButton");
     const instructions = document.querySelector("#instructions");
+    const closeModal = document.querySelector("#closeModal");
     const grid = document.querySelector("#grid");
     const powerDisplay = document.querySelector("#powerDisplay");
     const timeDisplay = document.querySelector("#timeDisplay");
     const hallwayButton = document.querySelector("#hallwayButton");
     const doorButton = document.querySelector("#doorButton");
     const threat = document.querySelector("#threat");
+    const screen = document.querySelector("#screen");
+    const codeIcon = document.querySelector("#codeIcon");
     function showHide(show, hide) {
         show.classList.remove("hidden");
         hide.classList.add("hidden");
     }
-    function toggleLights(isOn) {
+    function toggleLights(isToggled) {
         const overlay = document.querySelector("#overlay");
-        if (isOn) {
-            overlay.classList.add("hidden");
-            effects.lightsOnSound();
-        }
-        else {
+        if (isToggled) {
             overlay.classList.remove("hidden");
-            effects.lightsOffSound();
+        } else {
+            overlay.classList.add("hidden");
         }
+    }
+    function toggleScreen(isToggled) {
+        toggleLights(isToggled);
+        if (isToggled) {
+            screen.classList.remove("hidden");
+            codeIcon.classList.add("hidden");
+        } else {
+            screen.classList.add("hidden");
+            codeIcon.classList.remove("hidden");
+        }
+
     }
     function toggleThreat(isToggled) {
         if (isToggled) {
             threat.classList.remove("hidden");
             effects.scarySound();
-        }
-        else {
+        } else {
             threat.classList.add("hidden");
         }  
     }
@@ -51,7 +62,7 @@ const renderer = (function renderer() {
         console.log("Start Game");
         showHide(playPage, startPage);
         effects.menuClick();
-        effects.startMusic();
+        effects.playMusic(true);
     })
     instructionsButton.addEventListener('click', (e) => {
         showHide(grid, instructions);
@@ -59,16 +70,22 @@ const renderer = (function renderer() {
         effects.menuClick();
 
     })
+    closeModal.addEventListener('click', (e) => {
+       toggleScreen(false);
+    })
+    codeIcon.addEventListener('click', (e) => {
+        toggleScreen(true);
+    })
     hallwayButton.addEventListener('click', (e) => {
         hallwayLight.toggle();
-        if(door.isActive) {
+        if (door.isActive) {
             door.deactivate();
             door.incrementClicks();
         }
     })
     doorButton.addEventListener('click', (e) => {
         door.toggle();
-        if(hallwayLight.isActive) {
+        if (hallwayLight.isActive) {
             hallwayLight.deactivate();
             hallwayLight.incrementClicks();
         }
@@ -80,20 +97,17 @@ const renderer = (function renderer() {
         if (style == "doorClosed") {
             playPage.className = "";
             playPage.classList.add("doorClosed");
-        }
-        else if (style == "hallwayOn") {
+        } else if (style == "hallwayOn") {
             playPage.className = "";
             playPage.classList.add("hallwayOn");
-        }
-        else if (style == "default") {
+        } else if (style == "default") {
             playPage.className = "";
         }
     }
     function removeState(style) {
-        if(style == "doorClosed") {
+        if (style == "doorClosed") {
             playPage.classList.remove("doorClosed");
-        }
-        else if(style == "hallwayOn") {
+        } else if(style == "hallwayOn") {
             playPage.classList.remove("hallwayOn");
         }
     }
@@ -106,13 +120,20 @@ const renderer = (function renderer() {
         timeDisplay.textContent = time;
     }
     function renderLoss() {
+        toggleLights(false);
         showHide(losePage, playPage);
         effects.jumpScareSound();
+    }
+    function renderWin() {
+        toggleLights(false);
+        showHide(winPage, playPage);
+        effects.playMusic(false);
+        effects.victorySound();
     }
     function disable(component, bool) {
         component.disabled = bool;
     }
-    function renderQuestion(overviewText, missionText, codeText, questionText, option1Text, option2Text, option3Text, option4Text, isMCQ) {
+    function renderQuestion(overviewText, missionText, codeText, questionText, option1Text, option2Text, option3Text, option4Text, isMCQ, sourceText) {
         const overview = document.querySelector("#overview");
         const mission = document.querySelector("#mission");
         const code = document.querySelector("#code");
@@ -120,10 +141,12 @@ const renderer = (function renderer() {
 
         const answerMCQ = document.querySelector("#answerMCQ");
         const answerFree = document.querySelector("#answerFree");
+        const source = document.querySelector("#source");
         overview.textContent = overviewText;
         mission.textContent = missionText;
         code.textContent = codeText;
         question.textContent = questionText;
+        source.textContent = sourceText;
         if (isMCQ) {
             showHide(answerMCQ, answerFree);
             const option1 = document.querySelector("#option1");
@@ -144,22 +167,25 @@ const renderer = (function renderer() {
         sayHi,
         changeBackgroundImage,
         removeState,
-        toggleLights,
         toggleThreat,
         renderPower,
         renderTime,
         renderQuestion,
         renderLoss,
+        renderWin,
         disable
     }
 })();
 const effects = (function effects() {
-    function startMusic() {
-        const backgroundMusic = new Audio("./src/audio/backgroundMusic.mp3");
-    
-        backgroundMusic.loop = true;
-        backgroundMusic.volume = 0.2;
-        backgroundMusic.play();
+    const backgroundMusic = new Audio("./src/audio/backgroundMusic.mp3");
+    function playMusic(isOn) {
+        if (isOn) {
+            backgroundMusic.loop = true;
+            backgroundMusic.volume = 0.2;
+            backgroundMusic.play();
+        } else {
+            backgroundMusic.pause();
+        }
     }
     function scarySound() {
         const scarySound = new Audio("./src/audio/quickScary.mp3")
@@ -177,6 +203,10 @@ const effects = (function effects() {
     function incorrectSound() {
         const incorrectSound = new Audio("./src/audio/incorrect.mp3");
         incorrectSound.play();
+    }
+    function victorySound() {
+        const victorySound = new Audio("./src/audio/victory.mp3");
+        victorySound.play();
     }
     function doorClose() {
         const doorClose = new Audio("./src/audio/doorClose.mp3");
@@ -199,15 +229,16 @@ const effects = (function effects() {
         lightsOn.play();
     }
     function jumpScareSound() {
-        const jumpScareSound = new Audio("./src/audio/jumpscare.mp3");
+        const jumpScareSound = new Audio("./src/audio/correct.mp3");
         jumpScareSound.play();
     }
     return {
-        startMusic,
+        playMusic,
         scarySound,
         menuClick,
         correctSound,
         incorrectSound,
+        victorySound,
         doorClose,
         hallwayOn,
         defaultState,

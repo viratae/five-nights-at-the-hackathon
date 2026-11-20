@@ -8,7 +8,7 @@
     <link rel="icon" href="src/images/favicon.png">
 </head>
 <body>
-    <div id="overlay" class="hidden">
+    <div id="overlay" class="">
 
     </div>
     <div id="startPage" class="">
@@ -31,23 +31,30 @@
                 <h3>TIME: <span id="timeDisplay">12</span>:00 A.M.</h3>
                 <h3>POWER: <span id="powerDisplay">100</span>%</h3>
             </div>
+            <button id="codeIcon" class="hidden">
+                <img src="src/images/codeIcon.png" alt="">
+            </button>
             <div id="buttons">
                 <button id="hallwayButton">
                     <h3>HALLWAY LIGHT</h3>
-                    <p>Power Required: <span id="doorPowerText">3 / Second</span></p>
+                    <p>Power Required: <span id="hallPowerText">15</span></p>
+                    <p>Cool Down: 10 Seconds</p>
                 </button>
                 <button id="doorButton">
                     <h3>SHUT DOOR</h3>
                     <p>Power Required: <span id="doorPowerText">6 / Second</span></p>
+                    <p>Cool Down: None</p>
                 </button>
             </div>
             <div id="screen" class="module">
+                <span id="closeModal">&times;</span>
                 <h3>CODING CHALLENGE</h3>
                 <p class="description" id="overview"></p>
                 <p class="description bold">
                     <span id="mission"></span>
                 </p>
                 <div class="codeSection">
+<!-- Indentation is odd so that the code will indent correctly -->
 <pre><code id="code">
 </code></pre>
                 </div>
@@ -60,15 +67,20 @@
                 </div>
                 <div id="answerFree" class="hidden">
                     <form id="answerForm" autocomplete="off">
-                        <input type="text" id="answerInput">
+                        <input type="text" id="answerInput" spellcheck="false">
                         <button type="Submit">Submit</button>
                     </form>
                 </div>
+                <span id="source"></span>
             </div>
         </div>
     </div>
     <div id="losePage" class="hidden">
 
+    </div>
+    <div id="winPage" class="hidden">
+        <h1 class="glow stretch">YOU SURVIVED</h1>
+        <h5 class="stretch">For Now</h5>
     </div>
     <script type="module" src="./src/index.js"></script>
 </body>
