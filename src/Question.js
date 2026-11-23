@@ -1,6 +1,5 @@
 class Question {
     constructor({
-        questionNumber, 
         overview, 
         mission, 
         code, 
@@ -10,9 +9,9 @@ class Question {
         option3, 
         option4, 
         isMCQ, 
-        correctAnswer
+        correctAnswer,
+        source
     }) {
-        this.questionNumber = questionNumber;
         this.overview = overview;
         this.mission = mission;
         this.code = code;
@@ -23,6 +22,7 @@ class Question {
         this.option4 = option4;
         this.isMCQ = isMCQ;
         this.correctAnswer = correctAnswer;
+        this.source = source;
     }
 }
 export {

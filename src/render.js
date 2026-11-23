@@ -19,7 +19,10 @@ const renderer = (function renderer() {
     const instructionsButton = document.querySelector("#instructionsButton");
     const instructions = document.querySelector("#instructions");
     const closeModal = document.querySelector("#closeModal");
-    const grid = document.querySelector("#grid");
+    const credits = document.querySelector("#credits");
+    const creditsModal = document.querySelector("#creditsModal");
+    const closeModalCredits = document.querySelector("#closeModalCredits");
+    const gameLogic = document.querySelector("#gameLogic");
     const powerDisplay = document.querySelector("#powerDisplay");
     const timeDisplay = document.querySelector("#timeDisplay");
     const hallwayButton = document.querySelector("#hallwayButton");
@@ -65,10 +68,16 @@ const renderer = (function renderer() {
         effects.playMusic(true);
     })
     instructionsButton.addEventListener('click', (e) => {
-        showHide(grid, instructions);
+        showHide(gameLogic, instructions);
         game.startNight();
         effects.menuClick();
 
+    })
+    credits.addEventListener('click', (e) => {
+        creditsModal.classList.remove("hidden");
+    })
+    closeModalCredits.addEventListener('click', (e) => {
+        creditsModal.classList.add("hidden");
     })
     closeModal.addEventListener('click', (e) => {
        toggleScreen(false);

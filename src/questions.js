@@ -35,14 +35,27 @@ const questions = (function questions() {
     })
     function handleQuestion(answer) {
         const currentQuestion = questionList[questionIndex];
-        if(answer.replace(/\s/g, '') == currentQuestion.correctAnswer) {
+        console.log(currentQuestion.correctAnswer.length);
+        if(Array.isArray(currentQuestion.correctAnswer) && currentQuestion.correctAnswer.length > 1) {
+            let isCorrect = false;
+            for (const solution of currentQuestion.correctAnswer) {
+                if(answer.replace(/\s/g, '') == solution) {
+                    isCorrect = true;
+                    break;
+                } 
+            }
+            questionEffects(isCorrect);
+        }
+        else if(answer.replace(/\s/g, '') == currentQuestion.correctAnswer) {
             questionEffects(true);
         } 
         else {
             questionEffects(false);
         }
         questionIndex++;
-        displayQuestion(questionIndex);
+        if(questionIndex < questionList.length) {
+            displayQuestion(questionIndex);
+        }
     }
     function questionEffects(isCorrect) {
         let power = powerManager.getPower();
@@ -58,9 +71,8 @@ const questions = (function questions() {
         renderer.renderPower();
     }
     function displayQuestion(index) {
-
         renderer.renderQuestion(
-            questionList[questionIndex].overview, 
+            questionList[index].overview, 
             questionList[index].mission,
             questionList[index].code,
             questionList[index].question, 
@@ -69,6 +81,7 @@ const questions = (function questions() {
             questionList[index].option3,
             questionList[index].option4,
             questionList[index].isMCQ,
+            questionList[index].source,
         );
     }
     return {
@@ -78,28 +91,33 @@ const questions = (function questions() {
 export {
     questions
 }
-const question1 = new Question({
-    questionNumber: 1,
-    overview: "It's time to contribute to the team's project! Unfortunately there is a bug that's breaking everything and the syntax highlighter is broken.",
-    mission: "MISSION: Identify which line the bug is on",
-    code: `public class Database {
-    int age;
-    String name;
-    public Database(int theAge, String name) {
-        age = theAge;
-        name = name;
+const hackathonProjectQ = new Question({
+    overview: "It's time to contribute to the team's project! Unfortunately something isn't working as expected...",
+    mission: "MISSION: Investigate the code's behavior",
+    code: `class Main {
+    void main() {
+        Computer c = new Computer(256.0);
+        IO.println(c.storage);
+    }
+}
+
+class Computer {
+    double storage;
+
+    Computer(double storage) {
+        storage = storage;
     }
 }`,
-    question: "What line is the incorrect code on?",
-    option1: "Line 3",
-    option2: "Line 4",
-    option3: "Line 5",
-    option4: "Line 6",
+    question: "What prints?",
+    option1: "27.5",
+    option2: "0.0",
+    option3: "null",
+    option4: "Compile Error",
     isMCQ: true,
-    correctAnswer: "4"
+    correctAnswer: "2",
+    source: "CS 180 - Writing Classes Lesson"
 });
-const question2 = new Question({
-    questionNumber: 2,
+const substringPasswordQ = new Question({
     overview: "Whoa! The lights went out. It looks like somebody hacked into the building's server. Quick, gain access back before anything happens!",
     mission: "MISSION: Figure out the scrambled password and turn the lights back on",
     code: `public static void main(String[] args) {
@@ -116,11 +134,11 @@ const question2 = new Question({
     option3: null,
     option4: null,
     isMCQ: false,
-    correctAnswer: "ShSHss"
+    correctAnswer: "ShSHss",
+    source: ""
 });
-const question3 = new Question({
-    questionNumber: 3,
-    overview: "Looks like they've now taken over control of the building's electrical grid",
+const loopQ = new Question({
+    overview: "Looks like they've now taken over control of the building's electrical gameLogic",
     mission: "MISSION: Figure out the systems current logic and fix it so that you get 3 attempts",
     code: `public static void main(String[] args) {
     int attempts = 3;
@@ -134,6 +152,96 @@ const question3 = new Question({
     option3: null,
     option4: null,
     isMCQ: false,
-    correctAnswer: "i<attempts;i++"
+    correctAnswer: "i<attempts;i++",
+    source: ""
 });
-const questionList = [question1, question2, question3];
+const parseIntQ = new Question({
+    overview: "Looks like the hackers have altered the system's password logic! Reimplement it so only users with the correct password can access the system.",
+    mission: "MISSION: Parse the user's input as a number using IO.",
+    code: `void main() {
+    int password = 8923;
+    while(true) {
+        int guess = _________________________
+        if(guess != password) {
+            System.alert();
+        }
+        else {
+            System.grantAccess();
+            break;
+        }
+    }
+}`,
+    question: "Fix the code to read the user's input (as a number!) using IO.readln() with NO PARAMETERS",
+    option1: null,
+    option2: null,
+    option3: null,
+    option4: null,
+    isMCQ: false,
+    correctAnswer: "Integer.parseInt(IO.readln());",
+    source: "CS 180 - HW04"
+});
+const synchronizedQ = new Question({
+    overview: "Seems like your competition with the hacker's is exposing flaws in the system's handling of race conditions!",
+    mission: "MISSION: Ensure that the system can approporiately handle multiple users",
+    code: `public class System implements Runnable {
+    static int counter = 0;
+    static Object gateKeeper = new Object();       
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 1_000_000; i++) {
+            ____________ __________ {
+                counter++;                         
+            }
+        }
+    }
+}`,
+    question: "Use the existing variables to fill in the missing blank and fix the race condition ",
+    option1: null,
+    option2: null,
+    option3: null,
+    option4: null,
+    isMCQ: false,
+    correctAnswer: "synchronized(gateKeeper)",
+    source: "CS 180 - Synchronization Lesson"
+});
+const cdQ = new Question({
+    overview: "Before we get working on fixing the system we need to make sure we're in the right folder",
+    mission: "MISSION: Move into the folder system/src (this lies in the home directory which you're currently in",
+    code: `CoderBro@Codeys-Macbook-Air ~ % __ ______`,
+    question: "Write the code to commit your changes with the correct message",
+    option1: null,
+    option2: null,
+    option3: null,
+    option4: null,
+    isMCQ: false,
+    /* 
+    Correct answers are written with no spaces to match the code after trimming the whitespace.
+    While in the case of git it could technically make the answer incorrect, this allows most java code to pass correctly
+    regardless of exact spacing 
+    */
+    correctAnswer: ["cd.system/src", "cdsystem/src"],
+    source: "CS 193 - EDIT LATER"
+})
+const gitCommitQ = new Question({
+    overview: "Your changes are great, but unfortunately they aren't being pushed properly. Finish the current workflow",
+    mission: "MISSION: Commit your work with the exact message \"Patched bugs in the system\"",
+    code: `git add.
+___ _______ __
+git push`,
+    question: "Write the code to commit your changes with the correct message",
+    option1: null,
+    option2: null,
+    option3: null,
+    option4: null,
+    isMCQ: false,
+    /* 
+    Correct answers are written with no spaces to match the code after trimming the whitespace.
+    While in the case of git it could technically make the answer incorrect, this allows most java code to pass correctly
+    regardless of exact spacing 
+    */
+    correctAnswer: `gitcommit-m"Patchedbugsinthesystem"`,
+    source: "CS 193 - Git Introduction HW05"
+});
+
+const questionList = [hackathonProjectQ, substringPasswordQ, cdQ, loopQ, parseIntQ, synchronizedQ, gitCommitQ];
