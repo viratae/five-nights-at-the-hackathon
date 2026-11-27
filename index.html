@@ -8,9 +8,11 @@
     <link rel="icon" href="src/images/favicon.png">
 </head>
 <body>
-    <div id="overlay" class="">
-
-    </div>
+    <div id="overlay" class=""></div>
+    <!-- 
+        We have separate pages instead of changing the background to avoid the 
+        "black flash" as much as possible
+     -->
     <div id="startPage" class="">
         <div id="startText">
             <h1 class="glow stretch">FIVE NIGHTS AT THE HACKATHON</h1>
@@ -35,18 +37,18 @@
             <button id="instructionsButton">BEGIN SHIFT</button>
         </div>
         <div id="gameLogic" class="hidden">
-            <img src="src/images/favicon.png" class="hidden" id="threat" alt="Scary image of smiling hooded face">
+            <img src="src/images/threat.png" class="hidden" id="threat" alt="Scary image of smiling hooded face">
             <div id="stats">
-                <h3>TIME: <span id="timeDisplay">12</span>:00 A.M.</h3>
+                <h3>TIME: <span id="timeDisplay">12</span><span id="clockColon">:</span>00 A.M.</h3>
                 <h3>POWER: <span id="powerDisplay">100</span>%</h3>
             </div>
             <button id="codeIcon" class="hidden">
-                <img src="src/images/codeIcon.png" alt="Icon of the classic coding icon with brackets and slash">
+                <img src="src/images/codeIcon.png" alt="Icon of a coding symbol in a laptop">
             </button>
             <div id="buttons">
                 <button id="hallwayButton">
                     <h3>HALLWAY LIGHT</h3>
-                    <p>Power Required: <span id="hallPowerText">15</span></p>
+                    <p>Power Required: <span id="hallPowerText">10</span></p>
                     <p>Cool Down: 10 Seconds</p>
                 </button>
                 <button id="doorButton">
@@ -64,6 +66,11 @@
                 </p>
                 <div class="codeSection">
 <!-- Indentation is odd so that the code will indent correctly -->
+<!-- 
+    While I could have used a library like Prism to add syntax highlighting
+    Part of the challenge of the game is debugging. Syntax highlighters make
+    mistakes immediately obvious
+-->
 <pre><code id="code">
 </code></pre>
                 </div>
@@ -75,6 +82,7 @@
                     <button id="option4"></button>
                 </div>
                 <div id="answerFree" class="hidden">
+                    <!-- While logic could be activated by a button click, form has built it functionality and accessibility  -->
                     <form id="answerForm" autocomplete="off">
                         <input type="text" id="answerInput" spellcheck="false">
                         <button type="Submit">Submit</button>

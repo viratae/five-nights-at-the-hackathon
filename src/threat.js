@@ -23,9 +23,14 @@ const threat = (function threat() {
         }
     }
     function activateThreat() {
+       /*
+        * Sometimes the threat activates when the door or light is already active
+        * This ensures they do their function even if they are not called after the threat activates
+       */
         if (!door.isActive) {
             threatActive = true;
         }
+        
         if (hallwayLight.isActive) {
             renderer.toggleThreat(true);
         }
@@ -33,19 +38,21 @@ const threat = (function threat() {
     function deactivateThreat() {
         threatActive = false;
     }
+    // While seconds isn't currently used, future threats might be hardcoded to appear at certain times
     function threatEvents(seconds, timeThreatActive) {
         timeSinceThreat++;
-        if (timeThreatActive >= 15) {
+        if (timeThreatActive >= 18) {
             renderer.renderLoss();
             game.deactivateTimer();
         }
         if (timeSinceThreat == threatRandom) {
             activateThreat();
+            // Generates a time variable enough to be unpredictable, but not to be too frequent/rare
             threatRandom = generateThreatTime(20, 45);
-            console.log("THREAT PRESENT WOOP");
             timeSinceThreat = 0;
         }
     }
+    
     function generateThreatTime(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }

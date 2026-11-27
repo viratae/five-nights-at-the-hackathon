@@ -1,5 +1,6 @@
 import { 
-    powerManager
+    powerManager,
+    game
  } from "./game.js";
 import {
     effects, renderer
@@ -7,15 +8,16 @@ import {
 import {
     Question
 } from "./Question.js"
+
 const questions = (function questions() {
     let questionIndex = 0;
-
     const option1 = document.querySelector("#option1");
     const option2 = document.querySelector("#option2");
     const option3 = document.querySelector("#option3");
     const option4 = document.querySelector("#option4");
     const answerForm = document.querySelector("#answerForm");
     const answerInput = document.querySelector("#answerInput");
+
     option1.addEventListener('click', (e) => {
         handleQuestion("1");
     })
@@ -29,41 +31,54 @@ const questions = (function questions() {
         handleQuestion("4");
     })
     answerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+        e.preventDefault();  // So the page doesn't refresh
         handleQuestion(answerInput.value);
         answerInput.value="";
     })
+
     function handleQuestion(answer) {
         const currentQuestion = questionList[questionIndex];
-        console.log(currentQuestion.correctAnswer.length);
-        if(Array.isArray(currentQuestion.correctAnswer) && currentQuestion.correctAnswer.length > 1) {
+        /*
+        * Some questions have multiple correct answers
+        * If so, their answers are stored in an array and the user's response is checked for each solution
+        */
+        if (Array.isArray(currentQuestion.correctAnswer) && currentQuestion.correctAnswer.length > 1) {
             let isCorrect = false;
             for (const solution of currentQuestion.correctAnswer) {
-                if(answer.replace(/\s/g, '') == solution) {
+                /*
+                * Avoids counting user off for trailing/leading spaces or other variable code spacing
+                * Sometimes this accepts incorrect code, but more often it accounts for different styles
+                * EX: both synchronized(g) and synchronized (g) are correct 
+                */
+                if(answer.replace(/\s/g, '') == solution) { 
                     isCorrect = true;
                     break;
                 } 
             }
             questionEffects(isCorrect);
-        }
-        else if(answer.replace(/\s/g, '') == currentQuestion.correctAnswer) {
+        } else if (answer.replace(/\s/g, '') == currentQuestion.correctAnswer) {
             questionEffects(true);
-        } 
-        else {
+        } else {
             questionEffects(false);
         }
         questionIndex++;
-        if(questionIndex < questionList.length) {
+        if (questionIndex < questionList.length) {
             displayQuestion(questionIndex);
+        } else {
+            game.deactivateTimer();
+            renderer.renderWin();
         }
     }
     function questionEffects(isCorrect) {
+        /*
+        * Here we use set power instead of a power increase/decrease function so the setter can avoid
+        * invalid power statements (ex: power over 100)
+        */
         let power = powerManager.getPower();
         if (isCorrect) {
-            powerManager.setPower(power + 10);
+            powerManager.setPower(power + 15);
             effects.correctSound();
-        }
-        else {
+        } else {
             powerManager.setPower(power - 15);
             powerManager.raisePowerDecrease();
             effects.incorrectSound();
@@ -91,6 +106,14 @@ const questions = (function questions() {
 export {
     questions
 }
+/*
+* NOTE: "code:" blocks are not indented properly here so that their indentation is correct on the screen
+*
+* Here the questions are stored separately and added to an array so it is easy to switch between questions
+* in the future
+* 
+* Non MCQ questions set option to null since they are no choices
+*/
 const hackathonProjectQ = new Question({
     overview: "It's time to contribute to the team's project! Unfortunately something isn't working as expected...",
     mission: "MISSION: Investigate the code's behavior",
@@ -216,9 +239,9 @@ const cdQ = new Question({
     option4: null,
     isMCQ: false,
     /* 
-    Correct answers are written with no spaces to match the code after trimming the whitespace.
-    While in the case of git it could technically make the answer incorrect, this allows most java code to pass correctly
-    regardless of exact spacing 
+    * Correct answers are written with no spaces to match the code after trimming the whitespace.
+    * While in the case of git it could technically make the answer incorrect, this allows most java code to pass correctly
+    * regardless of exact spacing 
     */
     correctAnswer: ["cd.system/src", "cdsystem/src"],
     source: "CS 193 - EDIT LATER"
@@ -226,9 +249,9 @@ const cdQ = new Question({
 const gitCommitQ = new Question({
     overview: "Your changes are great, but unfortunately they aren't being pushed properly. Finish the current workflow",
     mission: "MISSION: Commit your work with the exact message \"Patched bugs in the system\"",
-    code: `git add.
-___ _______ __
-git push`,
+    code: `CoderBro@Codeys-Macbook-Air src % git add.
+CoderBro@Codeys-Macbook-Air src % ___ _______ __
+CoderBro@Codeys-Macbook-Air src % git push`,
     question: "Write the code to commit your changes with the correct message",
     option1: null,
     option2: null,
@@ -236,12 +259,29 @@ git push`,
     option4: null,
     isMCQ: false,
     /* 
-    Correct answers are written with no spaces to match the code after trimming the whitespace.
-    While in the case of git it could technically make the answer incorrect, this allows most java code to pass correctly
-    regardless of exact spacing 
+    * Correct answers are written with no spaces to match the code after trimming the whitespace.
+    * While in the case of git it could technically make the answer incorrect, this allows most java code to pass correctly
+    * regardless of exact spacing 
     */
     correctAnswer: `gitcommit-m"Patchedbugsinthesystem"`,
-    source: "CS 193 - Git Introduction HW05"
+    source: "CS 193 - Git Introduction Lecture"
 });
-
-const questionList = [hackathonProjectQ, substringPasswordQ, cdQ, loopQ, parseIntQ, synchronizedQ, gitCommitQ];
+const gitBranchQ = new Question({
+    overview: "Seems like the hackers are trying to control the door! Before we make too many changes, make a new branch to work on!",
+    mission: "MISSION: Create and switch to a branch named \"door\" in the same move! (Hint: -b)",
+    code: `CoderBro@Codeys-Macbook-Air src % ___ _______ __ ____`,
+    question: "Write the command to create and switch to a branch named \"door\" in one move",
+    option1: null,
+    option2: null,
+    option3: null,
+    option4: null,
+    isMCQ: false,
+    /* 
+    * Correct answers are written with no spaces to match the code after trimming the whitespace.
+    * While in the case of git it could technically make the answer incorrect, this allows most java code to pass correctly
+    * regardless of exact spacing 
+    */
+    correctAnswer: `gitcheckout-bdoor`,
+    source: "CS 193 - Git Introduction Lecture"
+});
+const questionList = [hackathonProjectQ, substringPasswordQ, cdQ, loopQ, parseIntQ, gitBranchQ, synchronizedQ, gitCommitQ];

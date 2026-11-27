@@ -35,7 +35,7 @@ body {
 #creditsModal {
     position: absolute;
     max-width: 50vw;
-    height: 90vh;
+    height: 50vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -85,7 +85,7 @@ body {
 #losePage {
     height: 100vh;
     width: 100vw;
-    background-image:url(images/hackBackgroundOLD.jpg);
+    background-image:url(images/creepyFace.png);
     background-color: black;
     background-repeat: no-repeat;
     background-position: center;
@@ -162,7 +162,6 @@ h2 {
 #instructionsButton:hover {
     background-color: rgba(50, 255, 47, 0.231);
 }
-
 #overlay {
     position: fixed;        
     top: 0;
@@ -187,7 +186,6 @@ h2 {
     color: rgb(69, 200, 78);
     cursor: pointer;
 }
-
 #screen {
     position: relative;
     max-width: 50vw;
@@ -221,6 +219,9 @@ h2 {
     top: 30px;
     right: 30px;
     color: rgb(69, 200, 78);
+}
+#clockColon {
+    animation: clock-blink 2s steps(1, end) infinite;
 }
 #threat {
     position: absolute;
@@ -265,17 +266,12 @@ h2 {
 }
 .module {
     background-color: rgb(11, 18, 15);
-    /* border: 4px solid rgba(13, 149, 13, 0.657);
-    border-top: 4px solid rgba(82, 255, 47, 0.402); */
     border: 4px solid rgb(66, 66, 66);    
     outline-offset: 6px;             
     outline: 5px double rgb(69, 200, 78);
     border-radius: 20px;
     width: 100%;
     height: 100%;
- }
-#screen {
-    
  }
 #screen h3 {
     color: rgb(69, 200, 78);
@@ -346,7 +342,6 @@ input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0px 1000px black inset !important;
     -webkit-text-fill-color: white !important;
 }
-
 #answerForm {
     width: 100%;
 }
@@ -376,14 +371,14 @@ input:-webkit-autofill:active {
     opacity: 0.4;
   }
 }
-/* @keyframes game-panic {
-    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+@keyframes clock-blink {
+    0%, 49% {
     opacity: 1;
-  }
-  20%, 24%, 55% {
-    opacity: 0.3;
-  }
-} */
+    }
+    50%, 100% {
+    opacity: 0;
+    }
+}
 @keyframes pulse-animation {
   0% {
     font-size: 2rem;

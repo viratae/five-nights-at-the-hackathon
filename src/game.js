@@ -1,5 +1,4 @@
 import {
-    effects,
     renderer
 } from "./render.js"
 import {
@@ -9,14 +8,16 @@ import {
 import {
     threat
 } from "./threat.js"
-
+/*
+* Manages the timer and start logic. 
+*/
 const game = (function game() {
-    const oneHour = 20;
+    const oneHour = 24;
     let seconds = 1;
     let timerID = null;
     let clockTime = 0;
     function startNight() {
-        if (timerID != null) {
+        if (timerID != null) {  // Avoid duplicate timers
             return;
         }
         timerID = setInterval(() => {
@@ -24,10 +25,12 @@ const game = (function game() {
             threat.updateThreat(seconds);
             powerManager.updatePower(seconds);
             updateHallway(hallwayLight.timeActive);
+            // When seconds is a multiple of oneHour, the hour on the clock increases
             if (seconds % oneHour == 0) {
                 clockTime++;
                 renderer.renderTime();
             }
+            // The game sholuld end at 6 AM
             if (clockTime == 6) {
                 deactivateTimer();
                 renderer.renderWin();
@@ -42,6 +45,14 @@ const game = (function game() {
     function getTime() {
         return clockTime;
     }  
+    /*
+    * The hallway light is on a timer unlike the door
+    * The hallway is active for 5 seconds and coolsdown for th next 10
+    * 
+    * This is because the door is useless (except for quickly deactivating the threat) 
+    * if the hallway light can always be activated
+    * Now users might close the door "just in case"
+    */
     function updateHallway(timeActive) {
         if (timeActive) {
             hallwayLight.hallTime++;
@@ -49,7 +60,7 @@ const game = (function game() {
                 renderer.disable(hallwayLight.buttonComponent, true);
             } else if (hallwayLight.hallTime <= 15) {
                 renderer.disable(hallwayLight.buttonComponent, true);
-                if(hallwayLight.isActive) {
+                if (hallwayLight.isActive) {
                     hallwayLight.deactivate();
                 }
             } else {
@@ -65,11 +76,13 @@ const game = (function game() {
         updateHallway
     }  
 })();
+/*
+* Manages the power and interactions with powerUser objects
+*/
 const powerManager = (function power() {
-   
     let power = 100;
     let powerDecrease = 1;
-    let powerInterval = 3;
+    let powerInterval = 3;  // After how many seconds the power decreases
     function updatePower(seconds) {
         updateObjectPower(door);
         updateObjectPower(hallwayLight);
@@ -83,10 +96,15 @@ const powerManager = (function power() {
         if (hallwayLight.isActive && hallwayLight.checkState() == false) {
             hallwayLight.deactivate();
         }
+        if (power <= 0 ) {
+            game.deactivateTimer();
+            renderer.renderLoss();
+        }
     }
     function getPower() {
         return power;
     }
+    // Increases how much power the player loses per second if the player gets the question wrong
     function raisePowerDecrease() {
         powerDecrease++;
     }
@@ -102,15 +120,21 @@ const powerManager = (function power() {
     }
     function updateObjectPower(powerUser) {
         if (powerUser.isActive) {
-            if(powerUser.isTogglable) {
+            if (powerUser.isTogglable) {
                 setPower(power - powerUser.powerUsage);
-            }
-            if (power < powerUser.powerUsage) {
-                renderer.disable(powerUser.buttonComponent, true);
             } else {
                 renderer.disable(powerUser.buttonComponent, false);
             }
             renderer.renderPower();
+        }
+        if (power < powerUser.powerUsage) {
+            renderer.disable(powerUser.buttonComponent, true);
+        } else {
+            /*
+            * The state of the hallway may occasionally glitch because updateHallwayLight processes
+            * that the state cannot be active during cooldown
+            */
+            renderer.disable(powerUser.buttonComponent, false);
         }
     }
     return {

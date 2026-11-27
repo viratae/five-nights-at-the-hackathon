@@ -1,5 +1,5 @@
 /*
-Handles the rendering of screen components
+* Handles the rendering of screen components
 */
 import {
     game,
@@ -30,6 +30,7 @@ const renderer = (function renderer() {
     const threat = document.querySelector("#threat");
     const screen = document.querySelector("#screen");
     const codeIcon = document.querySelector("#codeIcon");
+
     function showHide(show, hide) {
         show.classList.remove("hidden");
         hide.classList.add("hidden");
@@ -51,7 +52,6 @@ const renderer = (function renderer() {
             screen.classList.add("hidden");
             codeIcon.classList.remove("hidden");
         }
-
     }
     function toggleThreat(isToggled) {
         if (isToggled) {
@@ -61,47 +61,8 @@ const renderer = (function renderer() {
             threat.classList.add("hidden");
         }  
     }
-    startButton.addEventListener('click', (e) => {
-        console.log("Start Game");
-        showHide(playPage, startPage);
-        effects.menuClick();
-        effects.playMusic(true);
-    })
-    instructionsButton.addEventListener('click', (e) => {
-        showHide(gameLogic, instructions);
-        game.startNight();
-        effects.menuClick();
-
-    })
-    credits.addEventListener('click', (e) => {
-        creditsModal.classList.remove("hidden");
-    })
-    closeModalCredits.addEventListener('click', (e) => {
-        creditsModal.classList.add("hidden");
-    })
-    closeModal.addEventListener('click', (e) => {
-       toggleScreen(false);
-    })
-    codeIcon.addEventListener('click', (e) => {
-        toggleScreen(true);
-    })
-    hallwayButton.addEventListener('click', (e) => {
-        hallwayLight.toggle();
-        if (door.isActive) {
-            door.deactivate();
-            door.incrementClicks();
-        }
-    })
-    doorButton.addEventListener('click', (e) => {
-        door.toggle();
-        if (hallwayLight.isActive) {
-            hallwayLight.deactivate();
-            hallwayLight.incrementClicks();
-        }
-    })
-    function sayHi() {
-        console.log("Connected!");
-    }
+    
+    
     function changeBackgroundImage(style) {
         if (style == "doorClosed") {
             playPage.className = "";
@@ -113,6 +74,10 @@ const renderer = (function renderer() {
             playPage.className = "";
         }
     }
+    /*
+    * Instead of adding or removing door/light assets we change the background
+    * entirely so the positioning is consistent and exact on varying screen widths
+    */
     function removeState(style) {
         if (style == "doorClosed") {
             playPage.classList.remove("doorClosed");
@@ -168,10 +133,45 @@ const renderer = (function renderer() {
             option3.textContent = option3Text;
             option4.textContent = option4Text;
         } else {
-            showHide(answerFree, answerMCQ);
-            
+            showHide(answerFree, answerMCQ); 
         }
     }
+    startButton.addEventListener('click', (e) => {
+        showHide(playPage, startPage);
+        effects.menuClick();
+        effects.playMusic(true);
+    })
+    instructionsButton.addEventListener('click', (e) => {
+        showHide(gameLogic, instructions);
+        game.startNight();
+        effects.menuClick();
+    })
+    credits.addEventListener('click', (e) => {
+        creditsModal.classList.remove("hidden");
+    })
+    closeModalCredits.addEventListener('click', (e) => {
+        creditsModal.classList.add("hidden");
+    })
+    closeModal.addEventListener('click', (e) => {
+       toggleScreen(false);
+    })
+    codeIcon.addEventListener('click', (e) => {
+        toggleScreen(true);
+    })
+    hallwayButton.addEventListener('click', (e) => {
+        hallwayLight.toggle();
+        if (door.isActive) {
+            door.deactivate();
+            door.incrementClicks();
+        }
+    })
+    doorButton.addEventListener('click', (e) => {
+        door.toggle();
+        if (hallwayLight.isActive) {
+            hallwayLight.deactivate();
+            hallwayLight.incrementClicks();
+        }
+    })
     return {
         sayHi,
         changeBackgroundImage,
@@ -185,6 +185,10 @@ const renderer = (function renderer() {
         disable
     }
 })();
+/*
+* Controls the sound effects. While we could make one playSound() function and pass the sound 
+* we made them separate to declare the audios here instead of throughout the code 
+*/
 const effects = (function effects() {
     const backgroundMusic = new Audio("./src/audio/backgroundMusic.mp3");
     function playMusic(isOn) {
@@ -222,7 +226,6 @@ const effects = (function effects() {
         renderer.changeBackgroundImage("doorClosed");
         doorClose.play();
     }
-    
     function defaultState() {
         renderer.changeBackgroundImage("default");
     }
@@ -238,7 +241,7 @@ const effects = (function effects() {
         lightsOn.play();
     }
     function jumpScareSound() {
-        const jumpScareSound = new Audio("./src/audio/correct.mp3");
+        const jumpScareSound = new Audio("./src/audio/jumpscare.mp3");
         jumpScareSound.play();
     }
     return {

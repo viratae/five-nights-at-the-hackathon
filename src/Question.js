@@ -1,3 +1,6 @@
+/*
+* Represents a single question including its text content, answer, answer choices, and if it's MCQ
+*/
 class Question {
     constructor({
         overview, 
@@ -8,7 +11,7 @@ class Question {
         option2, 
         option3, 
         option4, 
-        isMCQ, 
+        isMCQ,  // render.js renders questions differently if isMCQ is false
         correctAnswer,
         source
     }) {

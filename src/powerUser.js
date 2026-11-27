@@ -1,6 +1,10 @@
 import { powerManager } from "./game.js";
 import { effects, renderer } from "./render.js";
 import { threat } from "./threat.js";
+/*
+* Acts as a template for both the door and hallway light 
+* Also easily extends to other future power users 
+*/
 class PowerUser {
     isActive = false;
     clicks = 0;
@@ -10,6 +14,11 @@ class PowerUser {
         this.buttonComponent = buttonComponent;
         this.isTogglable = isTogglable;
     }
+    /*
+    * Tracks whether the object is being toggled or detoggled
+    * Even if the object is technically detoggled by a nonclick (running out of power or activating other power user)
+    * Clicks is incremented as a means of tracking toggle state
+    */
     incrementClicks() {
         this.clicks++;
     }
